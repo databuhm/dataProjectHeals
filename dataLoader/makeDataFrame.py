@@ -7,6 +7,24 @@ def makeCsvDataFrame(csvFile):
     
     return df
 
+def makeVariousCsvDataFrame(csvDirPath) -> dict:
+    import os
+    from dataLoader.makeDataFrame import makeCsvDataFrame
+    
+    dfDict = {}
+    csvList = sorted([file for file in os.listdir(csvDirPath) if file.endswith('.csv')])
+    
+    for index, csvFile in enumerate(csvList):
+        dfName = f"{os.path.splitext(csvFile)[0].split('_')[0]}_{index}"
+        
+        csvFilePath = os.path.join(csvDirPath, csvFile)
+        df = makeCsvDataFrame(csvFilePath)
+        
+        dfDict[dfName] = df
+        print(f"make {dfName} is Ready: {df.shape}")
+
+    return dfDict
+
 def makeSasDataFrame(sasFile, chunkSize=100000):
     import pyreadstat
     from dataLoader.makeConverters import sasWithChunks
@@ -19,16 +37,17 @@ def makeSasDataFrame(sasFile, chunkSize=100000):
 
     return df
 
-def makeVariousSasDataFrame(sasFolderPath) -> dict: 
+def makeVariousSasDataFrame(sasDirPath) -> dict: 
     import os
+    from dataLoader.makeDataFrame import makeSasDataFrame
     
     dfDict = {}
-    sasList = sorted([file for file in os.listdir(sasFolderPath) if file.endswith('.sas7bdat')])
+    sasList = sorted([file for file in os.listdir(sasDirPath) if file.endswith('.sas7bdat')])
     
     for idx, sasFile in enumerate(sasList):
         dfName = f"{os.path.splitext(sasFile)[0]}_{idx}"
         
-        sasFilePath = os.path.join(sasFolderPath, sasFile)
+        sasFilePath = os.path.join(sasDirPath, sasFile)
         df = makeSasDataFrame(sasFilePath)
         
         dfDict[dfName] = df
