@@ -3,7 +3,7 @@ def csvWithChunks(csvFile, chunkSize=100000):
     import pandas as pd
     import datetime, time
     
-    print("Start: ", datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S'))
+    print("Start: ", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     start = time.time()
 
     convDict = {}
@@ -21,15 +21,16 @@ def csvWithChunks(csvFile, chunkSize=100000):
 
     print("Converters=convDict:", {k: v.__name__ for k, v in convDict.items()})
     
-    print("End: ", datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S'))
+    print("\nEnd: ", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("Running: ", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
+    print("-")
     
     return convDict
 
 def sasWithChunks(sasFile, chunkSize=100000):
     import pyreadstat, datetime, time
 
-    print("Start: ", datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S'))
+    print("Start: ", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     start = time.time()
 
     convDict = {}
@@ -46,7 +47,8 @@ def sasWithChunks(sasFile, chunkSize=100000):
 
     print("Converters=convDict:", {k: v.__name__ for k, v in convDict.items()})
 
-    print("End: ", datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S'))
+    print("\nEnd: ", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("Running: ", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
+    print("-")
     
     return convDict

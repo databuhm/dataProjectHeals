@@ -54,3 +54,19 @@ def makeVariousSasDataFrame(sasDirPath) -> dict:
         print(f"make {dfName} is Ready: {df.shape}")
 
     return dfDict
+
+def makeOneDataFrame(dfDict: dict):
+    import pandas as pd
+    import datetime, time
+    
+    print("Start: ", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    start = time.time()
+    
+    dfList = list(dfDict.values())
+    combinedDf = pd.concat(dfList, axis=0, ignore_index=True, sort=False)
+    
+    print(f"Shape of DataFrame: {combinedDf.shape}")
+    print("End: ", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("Running: ", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
+    
+    return combinedDf
