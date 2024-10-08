@@ -29,9 +29,9 @@ def makeVariousCsvDataFrame(csvDirPath) -> dict:
     return dfDict
 
 def makeSasDataFrame(sasFile, chunkSize=100000):
-    import pyreadstat, globalConfig
-    from dataLoader.makeConverters import sasWithChunks
+    import pyreadstat
     from dataLoader import globalConfig
+    from dataLoader.makeConverters import sasWithChunks
     
     convDict = sasWithChunks(sasFile, chunkSize)
     df, meta = pyreadstat.read_sas7bdat(sasFile)
