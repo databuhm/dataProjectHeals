@@ -1,9 +1,12 @@
 def makeCsvDataFrame(csvFile):
     import pandas as pd
+    from dataLoader import globalConfig
     from dataLoader.makeConverters import csvWithChunks
     
+    encoding = globalConfig.getEncoding()
+    
     convDict = csvWithChunks(csvFile)
-    df = pd.read_csv(csvFile, converters=convDict)
+    df = pd.read_csv(csvFile, converters=convDict, encoding=encoding)
     
     return df
 
@@ -26,11 +29,14 @@ def makeVariousCsvDataFrame(csvDirPath) -> dict:
     return dfDict
 
 def makeSasDataFrame(sasFile, chunkSize=100000):
-    import pyreadstat
+    import pyreadstat, globalConfig
     from dataLoader.makeConverters import sasWithChunks
+    from dataLoader import globalConfig
     
     convDict = sasWithChunks(sasFile, chunkSize)
     df, meta = pyreadstat.read_sas7bdat(sasFile)
+    
+    encoding = globalConfig.getEncoding()
     
     for col, dtype in convDict.items():
         df[col] = df[col].astype(dtype)
