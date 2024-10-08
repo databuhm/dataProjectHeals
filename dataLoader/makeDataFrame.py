@@ -26,9 +26,7 @@ def makeVariousSasDataFrame(sasFolderPath) -> dict:
     sasList = sorted([file for file in os.listdir(sasFolderPath) if file.endswith('.sas7bdat')])
     
     for idx, sasFile in enumerate(sasList):
-        # fileName = os.path.splitext(sasFile)[0]
         dfName = f"{os.path.splitext(sasFile)[0]}_{idx}"
-        # dfName = f"{fileName.split('_')[0]}_{idx}"
         
         sasFilePath = os.path.join(sasFolderPath, sasFile)
         df = makeSasDataFrame(sasFilePath)
