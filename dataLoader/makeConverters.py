@@ -1,8 +1,8 @@
-import pandas as pd
-import datetime, time
 
 def csvWithChunks(csvFile, chunkSize=100000):
-
+    import pandas as pd
+    import datetime, time
+    
     print("Start: ", datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S'))
     start = time.time()
 
