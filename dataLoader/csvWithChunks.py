@@ -1,0 +1,27 @@
+import pandas as pd
+import datetime, time
+
+def csvWithChunks(csvFile, chunkSize=100000):
+
+    print("Start: ", datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S'))
+    start = time.time()
+
+    convDict = {}
+    chunkIter = pd.read_csv(csvFile, chunksize=chunkSize, low_memory=False)
+
+    for chunk in chunkIter:
+        for col in chunk.columns:
+            if col in convDict:
+                continue
+            if chunk[col].dtype == 'object':
+                try:
+                    chunk[col].astype(float)
+                except ValueError:
+                    convDict[col] = str
+
+    print("Converters=convDict:", {k: v.__name__ for k, v in convDict.items()})
+    
+    print("End: ", datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S'))
+    print("Running: ", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
+    
+    return convDict
