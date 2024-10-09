@@ -1,6 +1,12 @@
 def getFileEncoding(filePath, sampleSize=100000000):
+
     from dataLoader import dataLoaderConfig
     import chardet
+    import os
+    
+    fileName = os.path.basename(filePath)
+    encodingDict = {}
+    
     try:
         with open(filePath, 'rb') as file:
             raw_data = file.read(sampleSize)
@@ -10,20 +16,19 @@ def getFileEncoding(filePath, sampleSize=100000000):
         
         if detectedEncoding is None or detectedEncoding.lower() == 'ascii':
             print(f"Detected Encoding: {detectedEncoding}. Changing to 'ISO-8859-1' for use.")
-            dataLoaderConfig.setEncoding('ISO-8859-1')
-        else:
-            print(f"Detected file encoding: {detectedEncoding}")
-            dataLoaderConfig.setEncoding(detectedEncoding)
+            detectedEncoding = 'ISO-8859-1'
+        
+        encodingDict[fileName] = detectedEncoding
+        dataLoaderConfig.setEncoding(detectedEncoding)
+        print(f"Final encoding to be used for '{fileName}': {detectedEncoding}")
     
     except Exception as e:
-        print(f"Error occurred while detecting encoding: {e}. Using default 'ISO-8859-1'.")
-        dataLoaderConfig.setEncoding('ISO-8859-1')
+        print(f"Error occurred while detecting encoding for '{fileName}': {e}. Using default 'ISO-8859-1'.")
+        detectedEncoding = 'ISO-8859-1'
+        encodingDict[fileName] = detectedEncoding
+        dataLoaderConfig.setEncoding(detectedEncoding)
     
-    finalEncoding = dataLoaderConfig.getEncoding()
-    print(f"Final encoding to be used: {finalEncoding}")
-    
-    return finalEncoding if finalEncoding else 'ISO-8859-1'
-
+    return encodingDict
 
 def getMultiFileEncodings(csvDirPath, defaultEncoding='iso-8859-1'):
     import os

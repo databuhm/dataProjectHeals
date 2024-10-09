@@ -1,31 +1,45 @@
-def makeCsvDataFrame(csvFile):
+def makeCsvDataFrame(csvFile, encodingDict=None):
     import pandas as pd
     from dataLoader import dataLoaderConfig
     from dataLoader.makeConverters import csvWithChunks
+    import os
+
+    fileName = os.path.basename(csvFile)
     
-    encoding = dataLoaderConfig.getEncoding()
+    if encodingDict and fileName in encodingDict:
+        encoding = encodingDict[fileName]
+    else:
+        encoding = dataLoaderConfig.getEncoding()
+    
+    if encoding is None:
+        raise ValueError(f"Encoding is not set for file: {csvFile}")
     
     convDict = csvWithChunks(csvFile)
     df = pd.read_csv(csvFile, converters=convDict, encoding=encoding)
     
     return df
 
-def makeVariousCsvDataFrame(csvDirPath) -> dict:
+def makeVariousCsvDataFrame(csvDirPath, encodingDict=None) -> dict:
     import os
     from dataLoader.makeDataFrame import makeCsvDataFrame
-    
+
+    if encodingDict is None:
+        print("Warning: Encoding dictionary is not provided. Using default 'iso-8859-1' for all files.")
+        encodingDict = {file: 'iso-8859-1' for file in os.listdir(csvDirPath) if file.endswith('.csv')}
+
     dfDict = {}
     csvList = sorted([file for file in os.listdir(csvDirPath) if file.endswith('.csv')])
-    
+
     for index, csvFile in enumerate(csvList):
         print("Target:", csvFile)
         dfName = f"{os.path.splitext(csvFile)[0].split('_')[0]}_{index}"
         
         csvFilePath = os.path.join(csvDirPath, csvFile)
-        df = makeCsvDataFrame(csvFilePath)
+
+        df = makeCsvDataFrame(csvFilePath, encodingDict=encodingDict)
         
         dfDict[dfName] = df
-        print(f"Result: DataFrame {dfName} with shape {df.shape}")
+        print(f"Result: DataFrame {dfName} with shape {df.shape} and encoding {encodingDict[csvFile]}")
         print("-")
 
     return dfDict
