@@ -1,20 +1,17 @@
 def makeCsvDataFrame(csvFile, encodingDict=None):
     import pandas as pd
-    from dataLoader import dataLoaderConfig
-    from dataLoader.makeConverters import csvWithChunks
     import os
+    from dataLoader.makeConverters import csvWithChunks
 
     fileName = os.path.basename(csvFile)
-    
+
     if encodingDict and fileName in encodingDict:
         encoding = encodingDict[fileName]
     else:
-        encoding = dataLoaderConfig.getEncoding()
+        print(f"Warning: Encoding for '{fileName}' not provided. Using default 'ISO-8859-1'.")
+        encoding = 'ISO-8859-1'
     
-    if encoding is None:
-        raise ValueError(f"Encoding is not set for file: {csvFile}")
-    
-    convDict = csvWithChunks(csvFile)
+    convDict = csvWithChunks(csvFile, encodingDict=encodingDict)
     df = pd.read_csv(csvFile, converters=convDict, encoding=encoding)
     
     return df
@@ -30,29 +27,36 @@ def makeVariousCsvDataFrame(csvDirPath, encodingDict=None) -> dict:
     dfDict = {}
     csvList = sorted([file for file in os.listdir(csvDirPath) if file.endswith('.csv')])
 
-    for index, csvFile in enumerate(csvList):
+    for csvFile in csvList:
         print("Target:", csvFile)
-        dfName = f"{os.path.splitext(csvFile)[0].split('_')[0]}_{index}"
-        
+
+        dfName = csvFile.split('.')[0]
         csvFilePath = os.path.join(csvDirPath, csvFile)
 
         df = makeCsvDataFrame(csvFilePath, encodingDict=encodingDict)
-        
+
         dfDict[dfName] = df
         print(f"Result: DataFrame {dfName} with shape {df.shape} and encoding {encodingDict[csvFile]}")
         print("-")
 
     return dfDict
 
-def makeSasDataFrame(sasFile, chunkSize=100000):
-    import pyreadstat
-    from dataLoader import dataLoaderConfig
+def makeSasDataFrame(sasFile, chunkSize=100000, encodingDict=None):
+    import pyreadstat, os
     from dataLoader.makeConverters import sasWithChunks
-    
-    convDict = sasWithChunks(sasFile, chunkSize)
-    df, meta = pyreadstat.read_sas7bdat(sasFile)
-    
-    encoding = dataLoaderConfig.getEncoding()
+
+    fileName = os.path.basename(sasFile)
+
+    if encodingDict and fileName in encodingDict:
+        fileEncoding = encodingDict[fileName]
+    else:
+        print(f"Warning: Encoding for '{fileName}' not provided. Using default 'utf-8'.")
+        fileEncoding = 'utf-8'
+
+    print(f"Reading SAS file '{sasFile}' with encoding '{fileEncoding}'")
+
+    convDict = sasWithChunks(sasFile, chunkSize, encodingDict=encodingDict)
+    df, meta = pyreadstat.read_sas7bdat(sasFile, encoding=fileEncoding)
     
     for col, dtype in convDict.items():
         df[col] = df[col].astype(dtype)

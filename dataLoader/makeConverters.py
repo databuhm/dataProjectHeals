@@ -1,8 +1,6 @@
 def getFileEncoding(filePath, sampleSize=100000000):
 
-    from dataLoader import dataLoaderConfig
-    import chardet
-    import os
+    import chardet, os
     
     fileName = os.path.basename(filePath)
     encodingDict = {}
@@ -19,14 +17,12 @@ def getFileEncoding(filePath, sampleSize=100000000):
             detectedEncoding = 'ISO-8859-1'
         
         encodingDict[fileName] = detectedEncoding
-        dataLoaderConfig.setEncoding(detectedEncoding)
         print(f"Final encoding to be used for '{fileName}': {detectedEncoding}")
     
     except Exception as e:
         print(f"Error occurred while detecting encoding for '{fileName}': {e}. Using default 'ISO-8859-1'.")
         detectedEncoding = 'ISO-8859-1'
         encodingDict[fileName] = detectedEncoding
-        dataLoaderConfig.setEncoding(detectedEncoding)
     
     return encodingDict
 
@@ -59,27 +55,29 @@ def getMultiFileEncodings(csvDirPath, defaultEncoding='iso-8859-1'):
     
     return encodings
 
-def csvWithChunks(csvFile, chunkSize=100000):
+def csvWithChunks(csvFile, chunkSize=100000, encodingDict=None):
     import pandas as pd
-    import datetime, time
-    from dataLoader import dataLoaderConfig
-    
+    import datetime, time, os
+
     print("Start:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     start = time.time()
+    
+    fileName = os.path.basename(csvFile)
 
-    fileEncoding = dataLoaderConfig.getEncoding()
-    if fileEncoding is None:
-        print("Warning: Encoding is 'None'. Setting default encoding to 'ISO-8859-1'.")
+    if encodingDict and fileName in encodingDict:
+        fileEncoding = encodingDict[fileName]
+    else:
+        print(f"Warning: Encoding for '{fileName}' not provided. Using default 'ISO-8859-1'.")
         fileEncoding = 'ISO-8859-1'
 
-    print(f"Reading the CSV file with '{fileEncoding}' encoding.")
+    print(f"Reading the CSV file '{fileName}' with '{fileEncoding}' encoding.")
     
     try:
         chunkIter = pd.read_csv(csvFile, chunksize=chunkSize, low_memory=False, encoding=fileEncoding)
     except UnicodeDecodeError as e:
         print(f"UnicodeDecodeError: {e}. Retrying with 'ISO-8859-1' encoding.")
         chunkIter = pd.read_csv(csvFile, chunksize=chunkSize, low_memory=False, encoding='ISO-8859-1')
-    
+
     convDict = {}
     for chunk in chunkIter:
         for col in chunk.columns:
@@ -91,27 +89,31 @@ def csvWithChunks(csvFile, chunkSize=100000):
                 except ValueError:
                     convDict[col] = str
 
-    print("Applying: Converters=convDict with", {k: v.__name__ for k, v in convDict.items()})
-    
     print("End:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("Running:", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
     print()
     
     return convDict
 
-def sasWithChunks(sasFile, chunkSize=100000):
-    import pyreadstat, datetime, time
-    from dataLoader import dataLoaderConfig
+def sasWithChunks(sasFile, chunkSize=100000, encodingDict=None):
+    import pyreadstat, datetime, time, os
 
     print("Start:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     start = time.time()
 
-    fileEncoding = dataLoaderConfig.getEncoding()
-    print(f"Processing the SAS file '{sasFile}' with encoding '{fileEncoding}' (encoding is not applied in pyreadstat).")
+    fileName = os.path.basename(sasFile)
+
+    if encodingDict and fileName in encodingDict:
+        fileEncoding = encodingDict[fileName]
+    else:
+        print(f"Warning: Encoding for '{fileName}' not provided. Using default 'utf-8'.")
+        fileEncoding = 'utf-8'
+
+    print(f"Processing the SAS file '{sasFile}' with encoding '{fileEncoding}' (encoding is not directly applied in pyreadstat).")
 
     convDict = {}
     try:
-        for i, (df, meta) in enumerate(pyreadstat.read_file_in_chunks(pyreadstat.read_sas7bdat, sasFile, chunksize=chunkSize)):
+        for i, (df, meta) in enumerate(pyreadstat.read_file_in_chunks(pyreadstat.read_sas7bdat, sasFile, chunksize=chunkSize, encoding=fileEncoding)):
             print(f"Processing chunk {i+1} with shape: {df.shape}")            
             
             for col in df.columns:
@@ -132,8 +134,6 @@ def sasWithChunks(sasFile, chunkSize=100000):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return {}
-
-    print("Applying: Converters=convDict with", {k: v.__name__ for k, v in convDict.items()})
 
     print("End:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("Running:", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
