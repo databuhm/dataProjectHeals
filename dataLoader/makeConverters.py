@@ -24,9 +24,11 @@ def getFileEncoding(filePath, sampleSize=100000000):
     
     return finalEncoding if finalEncoding else 'ISO-8859-1'
 
-def getMultiFileEncodings(csvDirPath):
-    import os, chardet
 
+def getMultiFileEncodings(csvDirPath, defaultEncoding='iso-8859-1'):
+    import os
+    import chardet
+    
     encodings = {}
     csvList = sorted([file for file in os.listdir(csvDirPath) if file.endswith('.csv')])
     
@@ -39,9 +41,9 @@ def getMultiFileEncodings(csvDirPath):
                 result = chardet.detect(raw_data)
                 encoding = result['encoding']
                 
-                if encoding is None:
-                    encoding = 'ISO-8859-1'
-                    print(f"Warning: Encoding not detected for '{csvFile}'. Using default 'ISO-8859-1'.")
+                if encoding is None or encoding.lower() == 'ascii':
+                    print(f"File '{csvFile}' detected as 'ascii'. Using default encoding '{defaultEncoding}'.")
+                    encoding = defaultEncoding
                 
                 encodings[csvFile] = encoding
                 print(f"File '{csvFile}' encoding detected: {encoding}")
