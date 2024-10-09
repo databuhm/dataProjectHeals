@@ -1,11 +1,5 @@
 class Tee:
     def __init__(self, *streams):
-        """
-        여러 스트림(예: 파일, 콘솔)에 동시에 출력하는 클래스.
-        
-        Args:
-            *streams: 출력할 스트림 목록 (예: 파일, 콘솔)
-        """
         self.streams = streams
 
     def write(self, message):
