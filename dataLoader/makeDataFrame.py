@@ -18,13 +18,15 @@ def makeVariousCsvDataFrame(csvDirPath) -> dict:
     csvList = sorted([file for file in os.listdir(csvDirPath) if file.endswith('.csv')])
     
     for index, csvFile in enumerate(csvList):
+        print("Target:", csvFile)
         dfName = f"{os.path.splitext(csvFile)[0].split('_')[0]}_{index}"
         
         csvFilePath = os.path.join(csvDirPath, csvFile)
         df = makeCsvDataFrame(csvFilePath)
         
         dfDict[dfName] = df
-        print(f"make {dfName} is Ready: {df.shape}")
+        print(f"Result: DataFrame {dfName} with shape {df.shape}")
+        print("-")
 
     return dfDict
 
@@ -51,13 +53,15 @@ def makeVariousSasDataFrame(sasDirPath) -> dict:
     sasList = sorted([file for file in os.listdir(sasDirPath) if file.endswith('.sas7bdat')])
     
     for idx, sasFile in enumerate(sasList):
+        print("Target:", idx)
         dfName = f"{os.path.splitext(sasFile)[0]}_{idx}"
         
         sasFilePath = os.path.join(sasDirPath, sasFile)
         df = makeSasDataFrame(sasFilePath)
         
         dfDict[dfName] = df
-        print(f"make {dfName} is Ready: {df.shape}\n")
+        print(f"Result: DataFrame {dfName} with shape {df.shape}")
+        print("-")
 
     return dfDict
 
