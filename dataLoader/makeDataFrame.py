@@ -57,7 +57,7 @@ def makeVariousSasDataFrame(sasDirPath) -> dict:
         df = makeSasDataFrame(sasFilePath)
         
         dfDict[dfName] = df
-        print(f"make {dfName} is Ready: {df.shape}")
+        print(f"make {dfName} is Ready: {df.shape}\n")
 
     return dfDict
 
