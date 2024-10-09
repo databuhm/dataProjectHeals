@@ -24,6 +24,34 @@ def getFileEncoding(filePath, sampleSize=100000000):
     
     return finalEncoding if finalEncoding else 'ISO-8859-1'
 
+def getMultiFileEncodings(csvDirPath):
+    import os, chardet
+
+    encodings = {}
+    csvList = sorted([file for file in os.listdir(csvDirPath) if file.endswith('.csv')])
+    
+    for csvFile in csvList:
+        filePath = os.path.join(csvDirPath, csvFile)
+        
+        try:
+            with open(filePath, 'rb') as file:
+                raw_data = file.read(100000000)
+                result = chardet.detect(raw_data)
+                encoding = result['encoding']
+                
+                if encoding is None:
+                    encoding = 'ISO-8859-1'
+                    print(f"Warning: Encoding not detected for '{csvFile}'. Using default 'ISO-8859-1'.")
+                
+                encodings[csvFile] = encoding
+                print(f"File '{csvFile}' encoding detected: {encoding}")
+        
+        except Exception as e:
+            print(f"Error detecting encoding for file '{csvFile}': {e}")
+            encodings[csvFile] = 'Unknown'
+    
+    return encodings
+
 def csvWithChunks(csvFile, chunkSize=100000):
     import pandas as pd
     import datetime, time
