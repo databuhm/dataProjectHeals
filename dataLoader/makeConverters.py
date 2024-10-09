@@ -1,6 +1,10 @@
 def getFileEncoding(filePath, sampleSize=100000000):
-
     import chardet, os
+    
+    _, fileExtension = os.path.splitext(filePath)
+    if fileExtension.lower() == '.sas7bdat':
+        print(f"Encoding detection for '{fileExtension}' files is not supported. Returning None.")
+        return None
     
     fileName = os.path.basename(filePath)
     encodingDict = {}
@@ -102,20 +106,14 @@ def sasWithChunks(sasFile, chunkSize=100000, encodingDict=None):
     start = time.time()
 
     fileName = os.path.basename(sasFile)
-
-    if encodingDict and fileName in encodingDict:
-        fileEncoding = encodingDict[fileName]
-    else:
-        print(f"Warning: Encoding for '{fileName}' not provided. Using default 'utf-8'.")
-        fileEncoding = 'utf-8'
-
-    print(f"Processing the SAS file '{sasFile}' with encoding '{fileEncoding}' (encoding is not directly applied in pyreadstat).")
+    print(f"Processing the SAS file '{fileName}' with default encoding (encoding is handled by pyreadstat based on file metadata).")
 
     convDict = {}
+    
     try:
-        for i, (df, meta) in enumerate(pyreadstat.read_file_in_chunks(pyreadstat.read_sas7bdat, sasFile, chunksize=chunkSize, encoding=fileEncoding)):
-            print(f"Processing chunk {i+1} with shape: {df.shape}")            
-            
+        for i, (df, meta) in enumerate(pyreadstat.read_file_in_chunks(pyreadstat.read_sas7bdat, sasFile, chunksize=chunkSize)):
+            print(f"Processing chunk {i+1} with shape: {df.shape}")
+
             for col in df.columns:
                 if col in convDict:
                     continue
@@ -128,15 +126,15 @@ def sasWithChunks(sasFile, chunkSize=100000, encodingDict=None):
     except FileNotFoundError:
         print(f"Error: The SAS file '{sasFile}' was not found.")
         return {}
-    except pyreadstat.PyreadstatError as e:
-        print(f"PyreadstatError occurred while reading '{sasFile}': {e}")
+    except UnicodeDecodeError as e:
+        print(f"UnicodeDecodeError occurred: {e}.")
         return {}
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print(f"An unexpected error occurred: {e}.")
         return {}
 
     print("End:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("Running:", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
     print()
-    
+
     return convDict

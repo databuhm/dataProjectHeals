@@ -41,26 +41,23 @@ def makeVariousCsvDataFrame(csvDirPath, encodingDict=None) -> dict:
 
     return dfDict
 
-def makeSasDataFrame(sasFile, chunkSize=100000, encodingDict=None):
+def makeSasDataFrame(sasFile, chunkSize=100000):
     import pyreadstat, os
     from dataLoader.makeConverters import sasWithChunks
 
     fileName = os.path.basename(sasFile)
 
-    if encodingDict and fileName in encodingDict:
-        fileEncoding = encodingDict[fileName]
-    else:
-        print(f"Warning: Encoding for '{fileName}' not provided. Using default 'utf-8'.")
-        fileEncoding = 'utf-8'
+    print(f"Reading SAS file '{sasFile}' with default encoding (utf-8 or file metadata).")
 
-    print(f"Reading SAS file '{sasFile}' with encoding '{fileEncoding}'")
+    convDict = sasWithChunks(sasFile, chunkSize)
+    df, meta = pyreadstat.read_sas7bdat(sasFile)
 
-    convDict = sasWithChunks(sasFile, chunkSize, encodingDict=encodingDict)
-    df, meta = pyreadstat.read_sas7bdat(sasFile, encoding=fileEncoding)
-    
     for col, dtype in convDict.items():
         df[col] = df[col].astype(dtype)
 
+    print(f"Result: DataFrame {df} with shape {df.shape}.")
+    print("-")
+    
     return df
 
 def makeVariousSasDataFrame(sasDirPath) -> dict: 
