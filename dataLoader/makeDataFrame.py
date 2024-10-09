@@ -95,3 +95,13 @@ def makeOneDataFrame(dfDict: dict):
     print("Running: ", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
     
     return combinedDf
+
+def eachSingleDfToDict(fileNames, dataFrameNames) -> dict:
+    import os
+
+    if len(fileNames) != len(dataFrameNames):
+        raise ValueError("The length of keys and values must match.")
+
+    dfDict = {os.path.splitext(fileNames[i])[0]: dataFrameNames[i] for i in range(len(fileNames))}
+    
+    return dfDict
