@@ -16,7 +16,7 @@ def makeCsvDataFrame(csvFile, encodingDict=None):
     
     return df
 
-def makeVariousCsvDataFrame(csvDirPath, encodingDict=None) -> dict:
+def makeMultiCsvDataFrame(csvDirPath, encodingDict=None) -> dict:
     import os
     from dataLoader.makeDataFrame import makeCsvDataFrame
 
@@ -60,7 +60,7 @@ def makeSasDataFrame(sasFile, chunkSize=100000):
     
     return df
 
-def makeVariousSasDataFrame(sasDirPath) -> dict: 
+def makeMultiSasDataFrame(sasDirPath) -> dict: 
     import os
     from dataLoader.makeDataFrame import makeSasDataFrame
     
@@ -68,15 +68,21 @@ def makeVariousSasDataFrame(sasDirPath) -> dict:
     sasList = sorted([file for file in os.listdir(sasDirPath) if file.endswith('.sas7bdat')])
     
     for idx, sasFile in enumerate(sasList):
-        print("Target:", idx)
-        dfName = f"{os.path.splitext(sasFile)[0]}_{idx}"
+        print(f"Processing file {idx+1}/{len(sasList)}: {sasFile}") #
         
-        sasFilePath = os.path.join(sasDirPath, sasFile)
-        df = makeSasDataFrame(sasFilePath)
+        sasFilePath = os.path.join(sasDirPath, sasFile) #
         
-        dfDict[dfName] = df
-        print(f"Result: DataFrame {dfName} with shape {df.shape}")
+        try:
+            df = makeSasDataFrame(sasFilePath)
+            dfName = os.path.splitext(sasFile)[0]
+            dfDict[dfName] = df
+            print(f"Result: DataFrame {dfName} with shape {df.shape}")
+        
+        except Exception as e:
+            print(f"Failed to process {sasFile}. Error: {e}")
+        
         print("-")
+    print(f"Completed processing {len(dfDict)} out of {len(sasList)} files.")
 
     return dfDict
 

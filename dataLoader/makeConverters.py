@@ -39,6 +39,12 @@ def getMultiFileEncodings(csvDirPath, defaultEncoding='iso-8859-1'):
     
     for csvFile in csvList:
         filePath = os.path.join(csvDirPath, csvFile)
+        fileExtension = os.path.splitext(csvFile)[1].lower()
+        
+        if fileExtension == '.sas7bdat':
+            encodings[csvFile] = 'File type not applicable for encoding detection'
+            print(f"Skipping encoding detection for '{csvFile}' as it is a '.sas7bdat' file.")
+            continue
         
         try:
             with open(filePath, 'rb') as file:
