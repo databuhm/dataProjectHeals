@@ -8,3 +8,4 @@ legacy*.*
 testCode.py
 *.txt
 *.sas7bdat
+*.log
