@@ -6,7 +6,7 @@ class Tee:
         for stream in self.streams:
             try:
                 stream.write(message)
-                stream.flush()  # 실시간 기록 보장
+                stream.flush()
             except Exception as e:
                 print(f"Error writing message to stream: {e}")
 
@@ -51,7 +51,7 @@ def redirectOutputToFile(func, filePath='output.txt', mode='w', encoding='utf-8'
         print(f"Output redirection completed. Original stdout restored.")
         
         try:
-            with open(filePath, 'a', encoding=encoding) as file:  # 'a' 모드로 파일 접근
+            with open(filePath, 'a', encoding=encoding) as file:
                 file.write(f"\nOutput has been redirected to {filePath}\n")
         except Exception as e:
             print(f"Error writing final log to file '{filePath}': {e}")
