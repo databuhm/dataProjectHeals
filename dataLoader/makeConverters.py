@@ -1,4 +1,4 @@
-def getFileEncoding(filePath, sampleSize=100000000):
+def getFileEncoding(filePath:str, sampleSize=100000000):
     import chardet, os
     
     _, fileExtension = os.path.splitext(filePath)
@@ -30,7 +30,7 @@ def getFileEncoding(filePath, sampleSize=100000000):
     
     return encodingDict
 
-def getMultiFileEncodings(csvDirPath, defaultEncoding='iso-8859-1'):
+def getMultiFileEncodings(csvDirPath:str, defaultEncoding='iso-8859-1'):
     import os
     import chardet
     
@@ -65,7 +65,7 @@ def getMultiFileEncodings(csvDirPath, defaultEncoding='iso-8859-1'):
     
     return encodings
 
-def csvWithChunks(csvFile, chunkSize=100000, encodingDict=None):
+def csvWithChunks(csvFile:str, chunkSize=100000, encodingDict=None):
     import pandas as pd
     import datetime, time, os
 
@@ -105,7 +105,7 @@ def csvWithChunks(csvFile, chunkSize=100000, encodingDict=None):
     
     return convDict
 
-def sasWithChunks(sasFile, chunkSize=100000, encodingDict=None):
+def sasWithChunks(sasFile:str, chunkSize=100000, encodingDict=None):
     import pyreadstat, datetime, time, os
 
     print("Start:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

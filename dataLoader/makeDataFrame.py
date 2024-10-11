@@ -1,4 +1,4 @@
-def makeCsvDataFrame(csvFile, encodingDict=None):
+def makeCsvDataFrame(csvFile: str, encodingDict=None):
     import pandas as pd
     import os
     from dataLoader.makeConverters import csvWithChunks
@@ -16,7 +16,7 @@ def makeCsvDataFrame(csvFile, encodingDict=None):
     
     return df
 
-def makeMultiCsvDataFrame(csvDirPath, encodingDict=None) -> dict:
+def makeMultiCsvDataFrame(csvDirPath: str, encodingDict=None) -> dict:
     import os
     from dataLoader.makeDataFrame import makeCsvDataFrame
 
@@ -41,7 +41,7 @@ def makeMultiCsvDataFrame(csvDirPath, encodingDict=None) -> dict:
 
     return dfDict
 
-def makeSasDataFrame(sasFile, chunkSize=100000):
+def makeSasDataFrame(sasFile: str, chunkSize=100000):
     import pyreadstat, os
     from dataLoader.makeConverters import sasWithChunks
 
@@ -60,7 +60,7 @@ def makeSasDataFrame(sasFile, chunkSize=100000):
     
     return df
 
-def makeMultiSasDataFrame(sasDirPath) -> dict: 
+def makeMultiSasDataFrame(sasDirPath: str) -> dict: 
     import os
     from dataLoader.makeDataFrame import makeSasDataFrame
     
@@ -102,7 +102,7 @@ def makeOneDataFrame(dfDict: dict):
     
     return combinedDf
 
-def eachSingleDfToDict(fileNames, dataFrameNames) -> dict:
+def eachSingleDfToDict(fileNames: list, dataFrameNames: list) -> dict:
     import os
 
     if len(fileNames) != len(dataFrameNames):
