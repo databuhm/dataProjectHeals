@@ -17,11 +17,14 @@ class Tee:
             except Exception as e:
                 print(f"Error flushing stream: {e}")
 
-def redirectOutputToFile(func, filePath='output.txt', mode='w', encoding='utf-8'):
+def redirectOutputToFile(func, outputFile:str='output.txt', mode='w', encoding='utf-8'):
+    '''
+    usage: redirectOutPutToFile(lambda FUNC(params), outputFile))
+    '''
     import sys
     import os
     
-    dirName = os.path.dirname(filePath)
+    dirName = os.path.dirname(outputFile)
     
     if dirName and not os.path.exists(dirName):
         try:
@@ -29,19 +32,19 @@ def redirectOutputToFile(func, filePath='output.txt', mode='w', encoding='utf-8'
             print(f"Directory '{dirName}' created for output file.")
         except OSError as e:
             print(f"Error: Could not create directory '{dirName}': {e}")
-            return None, filePath
+            return None, outputFile
 
     originStdOut = sys.stdout
     
     try:
-        with open(filePath, mode, encoding=encoding) as file:
+        with open(outputFile, mode, encoding=encoding) as file:
             sys.stdout = Tee(file, originStdOut)
             result = func()
     except FileNotFoundError as e:
-        print(f"Error: File '{filePath}' not found. Exception: {e}")
+        print(f"Error: File '{outputFile}' not found. Exception: {e}")
         result = None
     except PermissionError as e:
-        print(f"Error: Permission denied when accessing '{filePath}'. This might be caused by the file being open in another program. Exception: {e}")
+        print(f"Error: Permission denied when accessing '{outputFile}'. This might be caused by the file being open in another program. Exception: {e}")
         result = None
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
@@ -51,9 +54,9 @@ def redirectOutputToFile(func, filePath='output.txt', mode='w', encoding='utf-8'
         print(f"Output redirection completed. Original stdout restored.")
         
         try:
-            with open(filePath, 'a', encoding=encoding) as file:
-                file.write(f"\nOutput has been redirected to {filePath}\n")
+            with open(outputFile, 'a', encoding=encoding) as file:
+                file.write(f"\nOutput has been redirected to {outputFile}\n")
         except Exception as e:
-            print(f"Error writing final log to file '{filePath}': {e}")
+            print(f"Error writing final log to file '{outputFile}': {e}")
 
-    return result, filePath
+    return result, outputFile

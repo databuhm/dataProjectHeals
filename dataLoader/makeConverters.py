@@ -30,7 +30,7 @@ def getFileEncoding(filePath:str, sampleSize=100000000):
     
     return encodingDict
 
-def getMultiFileEncodings(csvDirPath:str, defaultEncoding='iso-8859-1'):
+def getMultiFileEncodings(csvDirPath:str, defaultEncoding:str='iso-8859-1'):
     import os
     import chardet
     
@@ -65,7 +65,7 @@ def getMultiFileEncodings(csvDirPath:str, defaultEncoding='iso-8859-1'):
     
     return encodings
 
-def csvWithChunks(csvFile:str, chunkSize=100000, encodingDict=None):
+def csvWithChunks(csvFile:str, chunkSize:int=100000, encodingDict:dict=None):
     import pandas as pd
     import datetime, time, os
 
@@ -101,11 +101,10 @@ def csvWithChunks(csvFile:str, chunkSize=100000, encodingDict=None):
 
     print("End:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("Running:", str(datetime.timedelta(seconds=(time.time() - start))).split(".")[0])
-    print()
     
     return convDict
 
-def sasWithChunks(sasFile:str, chunkSize=100000, encodingDict=None):
+def sasWithChunks(sasFile:str, chunkSize:int=100000):
     import pyreadstat, datetime, time, os
 
     print("Start:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

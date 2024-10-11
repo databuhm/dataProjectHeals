@@ -1,6 +1,6 @@
 client = None
 
-def setGbqClient(json_path=None):
+def setGbqClient(json_path:str=None):
     import glob, os
     from google.oauth2 import service_account
     from google.cloud import bigquery

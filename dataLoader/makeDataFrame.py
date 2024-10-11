@@ -1,4 +1,4 @@
-def makeCsvDataFrame(csvFile: str, encodingDict=None):
+def makeCsvDataFrame(csvFile:str, encodingDict:dict=None):
     import pandas as pd
     import os
     from dataLoader.makeConverters import csvWithChunks
@@ -16,7 +16,7 @@ def makeCsvDataFrame(csvFile: str, encodingDict=None):
     
     return df
 
-def makeMultiCsvDataFrame(csvDirPath: str, encodingDict=None) -> dict:
+def makeMultiCsvDataFrame(csvDirPath:str, encodingDict:dict=None) -> dict:
     import os
     from dataLoader.makeDataFrame import makeCsvDataFrame
 
@@ -27,21 +27,27 @@ def makeMultiCsvDataFrame(csvDirPath: str, encodingDict=None) -> dict:
     dfDict = {}
     csvList = sorted([file for file in os.listdir(csvDirPath) if file.endswith('.csv')])
 
-    for csvFile in csvList:
-        print("Target:", csvFile)
+    for idx, csvFile in enumerate(csvList):
+        print(f"Processing file {idx+1}/{len(csvList)}: {csvFile}")
 
         dfName = csvFile.split('.')[0]
         csvFilePath = os.path.join(csvDirPath, csvFile)
 
-        df = makeCsvDataFrame(csvFilePath, encodingDict=encodingDict)
+        try:
+            df = makeCsvDataFrame(csvFilePath, encodingDict=encodingDict)
 
-        dfDict[dfName] = df
-        print(f"Result: DataFrame {dfName} with shape {df.shape} and encoding {encodingDict[csvFile]}")
-        print("-")
+            dfDict[dfName] = df
+            print(f"Result: DataFrame {dfName} with shape {df.shape} and encoding {encodingDict[csvFile]}")
+            print("-")
+
+        except Exception as e:
+            print(f"Failed to process {csvFile}. Error: {e}")
+
+    print(f"Completed processing {len(dfDict)} out of {len(csvList)} files.")
 
     return dfDict
 
-def makeSasDataFrame(sasFile: str, chunkSize=100000):
+def makeSasDataFrame(sasFile:str, chunkSize=100000):
     import pyreadstat, os
     from dataLoader.makeConverters import sasWithChunks
 
@@ -60,7 +66,7 @@ def makeSasDataFrame(sasFile: str, chunkSize=100000):
     
     return df
 
-def makeMultiSasDataFrame(sasDirPath: str) -> dict: 
+def makeMultiSasDataFrame(sasDirPath:str) -> dict: 
     import os
     from dataLoader.makeDataFrame import makeSasDataFrame
     
@@ -68,9 +74,9 @@ def makeMultiSasDataFrame(sasDirPath: str) -> dict:
     sasList = sorted([file for file in os.listdir(sasDirPath) if file.endswith('.sas7bdat')])
     
     for idx, sasFile in enumerate(sasList):
-        print(f"Processing file {idx+1}/{len(sasList)}: {sasFile}") #
+        print(f"Processing file {idx+1}/{len(sasList)}: {sasFile}")
         
-        sasFilePath = os.path.join(sasDirPath, sasFile) #
+        sasFilePath = os.path.join(sasDirPath, sasFile)
         
         try:
             df = makeSasDataFrame(sasFilePath)
@@ -86,7 +92,7 @@ def makeMultiSasDataFrame(sasDirPath: str) -> dict:
 
     return dfDict
 
-def makeOneDataFrame(dfDict: dict):
+def makeOneDataFrame(dfDict:dict):
     import pandas as pd
     import datetime, time
     
@@ -102,7 +108,7 @@ def makeOneDataFrame(dfDict: dict):
     
     return combinedDf
 
-def eachSingleDfToDict(fileNames: list, dataFrameNames: list) -> dict:
+def eachSingleDfToDict(fileNames:list, dataFrameNames:list) -> dict:
     import os
 
     if len(fileNames) != len(dataFrameNames):
