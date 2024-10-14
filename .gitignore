@@ -4,8 +4,6 @@ __pycache__
 *.ipynb
 *.csv
 *.json
-legacy*.*
-testCode.py
 *.txt
 *.sas7bdat
 *.log
