@@ -49,13 +49,13 @@ conda activate dataProjectHeals
 ### Usage
 
 1. **BigQuery API Access**: 
-   Ensure that the BigQuery API Access Key (in JSON format) is placed in the root directory of this project. Without this key, you will not be able to access BigQuery.
+Ensure that the BigQuery API Access Key (in JSON format) is placed in the root directory of this project. Without this key, you will not be able to access BigQuery.
 
 2. **CSV File Encoding**: 
-   If you are working with CSV files, it is essential to run either the `getFileEncoding` or `getMultiFileEncodings` function first. This ensures that the files are read with the correct encoding, preventing data corruption.
+If you are working with CSV files, it is essential to run either the `getFileEncoding` or `getMultiFileEncodings` function first. This ensures that the files are read with the correct encoding, preventing data corruption.
 
 3. **Original Datasets**: 
-   Please note that the original datasets used in this project are not provided. You will need to use your own data to run the project.
+Please note that the original datasets used in this project are not provided. You will need to use your own data to run the project.
 
 
 ## License
