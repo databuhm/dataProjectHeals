@@ -1,8 +1,31 @@
 class Tee:
+    
+    """
+    A class to duplicate the output to multiple streams.
+
+    Args:
+        *streams: Multiple stream objects (e.g., sys.stdout, file objects) where output will be written.
+
+    Methods:
+        write(message):
+            Writes the given message to all streams.
+        
+        flush():
+            Flushes all streams to ensure that all data is written.
+    """
+    
     def __init__(self, *streams):
         self.streams = streams
 
     def write(self, message):
+        
+        """
+        Writes the message to all streams.
+
+        Args:
+            message (str): The message to be written to the streams.
+        """
+        
         for stream in self.streams:
             try:
                 stream.write(message)
@@ -11,6 +34,11 @@ class Tee:
                 print(f"Error writing message to stream: {e}")
 
     def flush(self):
+        
+        """
+        Flushes all streams to ensure that all buffered data is written.
+        """
+        
         for stream in self.streams:
             try:
                 stream.flush()
@@ -18,9 +46,25 @@ class Tee:
                 print(f"Error flushing stream: {e}")
 
 def redirectOutputToFile(func, outputFile:str='output.txt', mode='w', encoding='utf-8'):
-    '''
-    usage: redirectOutPutToFile(lambda FUNC(params), outputFile))
-    '''
+    
+    """
+    Redirects the output of a function to a file and prints the output to the console as well.
+
+    Args:
+        func (function): The function whose output needs to be redirected.
+        outputFile (str): The path of the output file where the redirected output will be saved. Default is 'output.txt'.
+        mode (str): The file mode, e.g., 'w' for writing or 'a' for appending. Default is 'w'.
+        encoding (str): The encoding of the output file. Default is 'utf-8'.
+
+    Returns:
+        The result of the function execution and the path of the output file.
+
+    Raises:
+        FileNotFoundError: If the output file path does not exist.
+        PermissionError: If there is a permission issue while writing to the file.
+        Exception: For any other unexpected errors during function execution.
+    """
+    
     import sys
     import os
     

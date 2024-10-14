@@ -1,6 +1,17 @@
 client = None
 
 def setGbqClient(json_path:str=None):
+    
+    """
+    Sets up the BigQuery client using the service account credentials.
+    
+    Args:
+        json_path (str): The path to the service account JSON file. If not provided, it will search for a JSON file in the current directory.
+        
+    Returns:
+        bool: True if the client is successfully set up, False otherwise.
+    """
+    
     import glob, os
     from google.oauth2 import service_account
     from google.cloud import bigquery
@@ -46,6 +57,14 @@ def setGbqClient(json_path:str=None):
         return False
 
 def getGbqClient():
+    
+    """
+    Retrieves the initialized BigQuery client.
+    
+    Returns:
+        bigquery.Client: The initialized BigQuery client, or None if it is not set up.
+    """
+    
     global client
     
     if client is None:
@@ -53,9 +72,25 @@ def getGbqClient():
     return client
 
 def isClientInit():
+    
+    """
+    Checks if the BigQuery client is initialized.
+    
+    Returns:
+        bool: True if the client is initialized, False otherwise.
+    """
+    
     return client is not None
 
 def resetGbqClient():
+    
+    """
+    Resets the BigQuery client, setting it to None.
+    
+    Returns:
+        None
+    """
+    
     global client
     
     client = None

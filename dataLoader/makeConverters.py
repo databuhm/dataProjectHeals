@@ -1,4 +1,16 @@
 def getFileEncoding(filePath:str, sampleSize=100000000):
+    
+    """
+    Detects the encoding of a file using the chardet library.
+    
+    Args:
+        filePath (str): Path to the file for which encoding needs to be detected.
+        sampleSize (int): The number of bytes to read from the file for encoding detection. Default is 100MB.
+        
+    Returns:
+        dict: A dictionary with the file name as the key and the detected encoding as the value.
+    """
+    
     import chardet, os
     
     _, fileExtension = os.path.splitext(filePath)
@@ -31,6 +43,18 @@ def getFileEncoding(filePath:str, sampleSize=100000000):
     return encodingDict
 
 def getMultiFileEncodings(csvDirPath:str, defaultEncoding:str='iso-8859-1'):
+    
+    """
+    Detects the encoding of multiple CSV files in a directory.
+    
+    Args:
+        csvDirPath (str): The directory containing CSV files.
+        defaultEncoding (str): Default encoding to use if detection fails or if 'ascii' is detected. Default is 'iso-8859-1'.
+        
+    Returns:
+        dict: A dictionary with file names as keys and detected encodings as values.
+    """
+    
     import os
     import chardet
     
@@ -66,6 +90,19 @@ def getMultiFileEncodings(csvDirPath:str, defaultEncoding:str='iso-8859-1'):
     return encodings
 
 def csvWithChunks(csvFile:str, chunkSize:int=100000, encodingDict:dict=None):
+    
+    """
+    Reads a CSV file in chunks and detects column data types, converting object columns to strings.
+    
+    Args:
+        csvFile (str): The path to the CSV file.
+        chunkSize (int): The number of rows per chunk. Default is 100,000 rows.
+        encodingDict (dict): A dictionary of file names and their corresponding encodings.
+        
+    Returns:
+        dict: A dictionary with column names as keys and data types (str or float) as values.
+    """
+    
     import pandas as pd
     import datetime, time, os
 
@@ -105,6 +142,18 @@ def csvWithChunks(csvFile:str, chunkSize:int=100000, encodingDict:dict=None):
     return convDict
 
 def sasWithChunks(sasFile:str, chunkSize:int=100000):
+    
+    """
+    Reads a SAS file in chunks and detects column data types.
+    
+    Args:
+        sasFile (str): The path to the SAS file.
+        chunkSize (int): The number of rows per chunk. Default is 100,000 rows.
+        
+    Returns:
+        dict: A dictionary with column names as keys and their corresponding data types (str or float).
+    """
+    
     import pyreadstat, datetime, time, os
 
     print("Start:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

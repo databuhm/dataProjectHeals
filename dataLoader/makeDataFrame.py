@@ -1,4 +1,16 @@
 def makeCsvDataFrame(csvFile:str, encodingDict:dict=None):
+    
+    """
+    Creates a DataFrame from a CSV file, applying appropriate encoding and data type conversions.
+    
+    Args:
+        csvFile (str): The path to the CSV file.
+        encodingDict (dict): A dictionary of file names and their corresponding encodings.
+        
+    Returns:
+        pd.DataFrame: A pandas DataFrame created from the CSV file.
+    """
+    
     import pandas as pd
     import os
     from dataLoader.makeConverters import csvWithChunks
@@ -17,6 +29,18 @@ def makeCsvDataFrame(csvFile:str, encodingDict:dict=None):
     return df
 
 def makeMultiCsvDataFrame(csvDirPath:str, encodingDict:dict=None) -> dict:
+    
+    """
+    Creates DataFrames from multiple CSV files in a directory and stores them in a dictionary.
+    
+    Args:
+        csvDirPath (str): The directory containing CSV files.
+        encodingDict (dict): A dictionary of file names and their corresponding encodings.
+        
+    Returns:
+        dict: A dictionary with file names (without extensions) as keys and their corresponding DataFrames as values.
+    """
+    
     import os
     from dataLoader.makeDataFrame import makeCsvDataFrame
 
@@ -48,6 +72,18 @@ def makeMultiCsvDataFrame(csvDirPath:str, encodingDict:dict=None) -> dict:
     return dfDict
 
 def makeSasDataFrame(sasFile:str, chunkSize=100000):
+    
+    """
+    Creates a DataFrame from a SAS file, reading the file in chunks.
+    
+    Args:
+        sasFile (str): The path to the SAS file.
+        chunkSize (int): The number of rows per chunk. Default is 100,000 rows.
+        
+    Returns:
+        pd.DataFrame: A pandas DataFrame created from the SAS file.
+    """
+
     import pyreadstat, os
     from dataLoader.makeConverters import sasWithChunks
 
@@ -67,6 +103,17 @@ def makeSasDataFrame(sasFile:str, chunkSize=100000):
     return df
 
 def makeMultiSasDataFrame(sasDirPath:str) -> dict: 
+    
+    """
+    Creates DataFrames from multiple SAS files in a directory and stores them in a dictionary.
+    
+    Args:
+        sasDirPath (str): The directory containing SAS files.
+        
+    Returns:
+        dict: A dictionary with file names (without extensions) as keys and their corresponding DataFrames as values.
+    """
+    
     import os
     from dataLoader.makeDataFrame import makeSasDataFrame
     
@@ -93,6 +140,17 @@ def makeMultiSasDataFrame(sasDirPath:str) -> dict:
     return dfDict
 
 def makeOneDataFrame(dfDict:dict):
+    
+    """
+    Combines multiple DataFrames into one DataFrame by concatenating them along the rows.
+    
+    Args:
+        dfDict (dict): A dictionary with DataFrame names as keys and DataFrames as values.
+        
+    Returns:
+        pd.DataFrame: A combined DataFrame.
+    """
+    
     import pandas as pd
     import datetime, time
     
@@ -109,6 +167,21 @@ def makeOneDataFrame(dfDict:dict):
     return combinedDf
 
 def eachSingleDfToDict(fileNames:list, dataFrameNames:list) -> dict:
+    
+    """
+    Converts individual file names and DataFrame names into a dictionary.
+    
+    Args:
+        fileNames (list): List of file names (with extensions).
+        dataFrameNames (list): List of corresponding DataFrame names.
+        
+    Returns:
+        dict: A dictionary with file names (without extensions) as keys and DataFrame names as values.
+        
+    Raises:
+        ValueError: If the lengths of fileNames and dataFrameNames do not match.
+    """
+    
     import os
 
     if len(fileNames) != len(dataFrameNames):

@@ -1,13 +1,18 @@
 def makeBigQueryDataset(datasetName:str='dataBigQuery'):
-    from google.cloud import bigquery
-    from gbqLoader.gbqConfig import getGbqClient
+    
     """
-    Create a BigQuery dataset with the specified name.
+    Creates BigQuery datasets with the specified name.
+    
     Args:
         datasetName (str): The name of the dataset to create.
+        
     Returns:
-        bool: True if the dataset is created successfully, False otherwise.
+        bool: True if the dataset is successfully created, False otherwise.
     """
+    
+    from google.cloud import bigquery
+    from gbqLoader.gbqConfig import getGbqClient
+
     client = getGbqClient()
     
     if client is None:
@@ -28,16 +33,21 @@ def makeBigQueryDataset(datasetName:str='dataBigQuery'):
         return False
 
 def loadDataFrameToBigQuery(datasetName:str, dfDict:dict):
+    
+    """
+    Loads DataFrames from a dictionary into BigQuery tables within the specified dataset.
+    
+    Args:
+        datasetName (str): The name of the BigQuery dataset where the tables will be created.
+        dfDict (dict): A dictionary where keys are table names and values are DataFrames.
+        
+    Returns:
+        bool: True if all DataFrames are successfully loaded, False otherwise.
+    """
+    
     from google.cloud import bigquery
     from gbqLoader.gbqConfig import getGbqClient
-    """
-    Load the DataFrames in dfDict into BigQuery tables within the specified dataset.
-    Args:
-        datasetName (str): The name of the dataset where tables will be created.
-        dfDict (dict): A dictionary where keys are table names and values are DataFrames.
-    Returns:
-        bool: True if all tables are created and data is loaded successfully, False otherwise.
-    """
+
     client = getGbqClient()
     
     if client is None:
